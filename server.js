@@ -5,50 +5,57 @@ const fs = require("fs");
 const app = express();
 const PORT = 8080;
 
-app.get("/notes", function(req,res) {
-    res.sendFile(path.join(__dirname, "notes.html"));
-});
+//const noteData = require("./db/db.json");
 
-app.get("*", function(req,res) {
-    res.sendFile(path.join(__dirname, "index.html"));
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: "true"
+}));
+
+app.get("/notes", function(req,res) {
+    res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
 app.get("/api/notes", function(req,res) {
-    res.sendFile(path.join(__dirname, "db.json"));
+    let read = fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf-8");
+
+    let parsed = JSON.parse(read);
+
+    parsed.forEach((note, i) => note.id = i);
+
+    res.json(parsed);
 });
 
 // readFileAsync (filename, json)
 
 app.post("/api/notes", function(req,res) {
     const newNote = req.body;
+    console.log(newNote);
     // Use FS to read db.json
-    let read = fs.readFileSync("db.json")
+    let read = fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf-8");
     // Use JSON.parse to get result (array) in JS
     let array = JSON.parse(read);
     // push new note to result array
-    newNote.push(array);
-    // JSON.stringify array
-    let string = JSON.stringify(array);
+    array.push(newNote);
     //Use FS to write this in db.json
-    fs.writeFileSync("db.json", string)
+    fs.writeFileSync(path.join(__dirname, "./db/db.json"), JSON.stringify(array));
 });
 
-app.delete("/api/notes/:id", function(req,res) {
-    const noteID = req.params.id
-    let splice = '';
-    // Use FS to read db.json
-    let read = fs.readFileSync("db.json");
-    // use JSON.parse to get result array in JS
-    let array = JSON.parse(read);
-    // Loop over aray to find matching id (noteID)
-    for (i = 0; i < parse.length; i++) {
-        if(array[i] == noteID){
-            array.splice(noteID);
-        }
-    }
-    // Remove note with matching id from array
-    // JSON.stringify to turn back to json
-    // Use FS to write to db.json
+app.delete('/api/notes/:id', function(req,res)  {
+    const deleteID = parseInt(req.params.id);
+
+    const read = JSON.parse(fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf-8"));
+
+    read.splice(deleteID, 1);
+
+    fs.writeFileSync(path.join(__dirname, "./db/db.json"), JSON.stringify(read));
+
+    res.json(true);
+});
+
+app.get("*", function(req,res) {
+    res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 app.listen(PORT, function() {
