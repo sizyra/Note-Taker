@@ -35,14 +35,15 @@ app.post("/api/notes", function(req,res) {
 
 app.delete("/api/notes/:id", function(req,res) {
     const noteID = req.params.id
+    let splice = '';
     // Use FS to read db.json
     let read = fs.readFileSync("db.json");
     // use JSON.parse to get result array in JS
     let array = JSON.parse(read);
     // Loop over aray to find matching id (noteID)
     for (i = 0; i < parse.length; i++) {
-        if(parse[i] == noteID){
-
+        if(array[i] == noteID){
+            array.splice(noteID);
         }
     }
     // Remove note with matching id from array
