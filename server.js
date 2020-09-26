@@ -31,7 +31,6 @@ app.get("/api/notes", function(req,res) {
 
 app.post("/api/notes", function(req,res) {
     const newNote = req.body;
-    console.log(newNote);
     // Use FS to read db.json
     let read = fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf-8");
     // Use JSON.parse to get result (array) in JS
