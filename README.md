@@ -8,9 +8,6 @@ This app allows the user to take and delete notes easily.
 2. [Installation](#Installation)
 3. [Usage](#Usage)
 4. [License](#License)
-5. [Contributing](#Contributing)
-6. [Tests](#Tests)
-7. [Questions](#Questions)
 
 ## Installation
 Copy the repository using 'git clone https://github.com/sizyra/Note-Taker.git' and run 'npm install' in the local repository for local use. Otherwise, use the online Heroku version at: https://note-taker-siz.herokuapp.com/
